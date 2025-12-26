@@ -292,6 +292,7 @@ pub fn generate_enum(
     let result = quote! {
         // #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
         #[derive(SchemaRead, Clone, Debug)]
+        #[wincode(tag_encoding = "u8")]
         #derive_copy
         pub enum #enum_name {
             #(#variant_idents),*
