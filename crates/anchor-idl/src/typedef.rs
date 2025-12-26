@@ -209,7 +209,7 @@ pub fn generate_struct(
         };
         quote! {
             // #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
-            #[derive(SchemaRead, SchemaWrite)]
+            #[derive(SchemaRead, SchemaWrite, Clone, Debug)]
             #derive_copy
         }
     };
