@@ -179,7 +179,7 @@ pub fn generate_struct(
 
     let derive_default = if props.can_derive_default {
         quote! {
-            #[derive(Default)]
+            // #[derive(Default)]
         }
     } else {
         quote! {}
