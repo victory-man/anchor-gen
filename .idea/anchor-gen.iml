@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="EMPTY_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/crates/anchor-gen/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/anchor-generate-cpi-crate/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/anchor-generate-cpi-interface/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/anchor-idl/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/examples/dflow/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/examples/farms/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/examples/govern-cpi/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/examples/kamino-lend/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/examples/marinade-cpi/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

@@ -569,6 +569,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "dflow"
+version = "0.1.0"
+dependencies = [
+ "anchor-gen",
+ "anchor-lang",
+ "borsh 0.10.4",
+ "bytemuck",
+]
+
+[[package]]
 name = "digest"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
