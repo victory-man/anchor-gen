@@ -102,7 +102,7 @@ impl Generator {
 
         quote! {
             // use anchor_lang::prelude::*;
-            use wincode::{SchemaRead, SchemaWrite};
+            use wincode::{SchemaRead};
 
             // declare_id!(#address);
 

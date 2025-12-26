@@ -209,7 +209,7 @@ pub fn generate_struct(
         };
         quote! {
             // #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
-            #[derive(SchemaRead, SchemaWrite, Clone)]
+            #[derive(SchemaRead, Clone)]
             #derive_copy
         }
     };
@@ -291,7 +291,7 @@ pub fn generate_enum(
 
     let result = quote! {
         // #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
-        #[derive(SchemaRead, SchemaWrite, Clone, Debug)]
+        #[derive(SchemaRead, Clone, Debug)]
         #derive_copy
         pub enum #enum_name {
             #(#variant_idents),*
