@@ -1,8 +1,7 @@
-use anchor_lang_idl_spec::{IdlDefinedFields, IdlField, IdlType};
+use anchor_lang_idl_spec::{IdlDefinedFields, IdlField};
 use heck::ToSnakeCase;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use crate::ty_to_rust_type;
 
 /// Generates struct fields from a list of [IdlField]s.
 pub fn generate_struct_fields_from_slice(fields: &[IdlField]) -> TokenStream {
@@ -10,19 +9,8 @@ pub fn generate_struct_fields_from_slice(fields: &[IdlField]) -> TokenStream {
         let name = format_ident!("{}", arg.name.to_snake_case());
         let type_name = crate::ty_to_rust_type(&arg.ty);
         let stream: proc_macro2::TokenStream = type_name.parse().unwrap();
-        match &arg.ty {
-            IdlType::Vec(inner) => {
-                let derive = format_ident!(r##"#[wincode(with = "wincode::containers::Vec<{}, U32SeqLen>")]"##, ty_to_rust_type(inner));
-                quote! {
-                    #derive
-                    pub #name: #stream
-                }
-            }
-            _ => {
-                quote! {
-                    pub #name: #stream
-                }
-            }
+        quote! {
+            pub #name: #stream
         }
     });
     quote! {
