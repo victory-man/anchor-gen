@@ -102,9 +102,31 @@ impl Generator {
 
         quote! {
             // use anchor_lang::prelude::*;
-            use wincode::{SchemaRead};
+            use wincode::{ReadResult, SchemaRead, SchemaWrite, WriteResult};
+            use wincode::io::{Reader, Writer};
 
             // declare_id!(#address);
+
+            struct U32SeqLen;
+            impl wincode::len::SeqLen for U32SeqLen {
+                fn read<'de, T>(reader: &mut impl Reader<'de>) -> ReadResult<usize> {
+                    // let Ok((len, read)) = decode_shortu16_len(reader.fill_buf(3)?) else {
+                    //     return Err(read_length_encoding_overflow("u16::MAX"));
+                    // };
+                    let bytes = reader.fill_buf(4)?;
+                    let len = u32::from_le_bytes(*array_ref![bytes, 0, 4]) as usize;
+                    unsafe { reader.consume_unchecked(4) };
+                    Ok(len)
+                }
+
+                fn write(writer: &mut impl Writer, len: usize) -> WriteResult<()> {
+                    u32::write(writer, &(len as u32))
+                }
+
+                fn write_bytes_needed(len: usize) -> WriteResult<usize> {
+                    Ok(size_of::<u32>())
+                }
+            }
 
             pub mod typedefs {
                 //! User-defined types.
