@@ -12,7 +12,7 @@ pub fn generate_struct_fields_from_slice(fields: &[IdlField]) -> TokenStream {
         let stream: proc_macro2::TokenStream = type_name.parse().unwrap();
         match &arg.ty {
             IdlType::Vec(inner) => {
-                let derive = format_ident!(r##"#[wincode(with = "wincode::containers::Vec<{}, U32SeqLen>")]"##, ty_to_rust_type(inner));
+                let derive = format_ident!("#[wincode(with = \"wincode::containers::Vec<{}, U32SeqLen>\")]", ty_to_rust_type(inner));
                 quote! {
                     #derive
                     pub #name: #stream
