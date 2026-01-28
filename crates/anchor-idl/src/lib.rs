@@ -40,7 +40,13 @@ pub fn ty_to_rust_type_is_wincode(ty: &IdlType, is_wincode: bool) -> String {
         IdlType::F64 => "f64".to_string(),
         IdlType::U128 => "u128".to_string(),
         IdlType::I128 => "i128".to_string(),
-        IdlType::Bytes => "Vec<u8>".to_string(),
+        IdlType::Bytes => {
+            if is_wincode {
+                "wincode::containers::Vec<u8, U32SeqLen>".to_string()
+            }else {
+                "Vec<u8>".to_string()
+            }
+        },
         IdlType::String => "String".to_string(),
         IdlType::Pubkey => "Pubkey".to_string(),
         IdlType::Option(inner) => {
