@@ -11,6 +11,12 @@ pub fn generate_struct_fields_from_slice(fields: &[IdlField]) -> TokenStream {
         let type_name = crate::ty_to_rust_type(&arg.ty);
         let stream: proc_macro2::TokenStream = type_name.parse().unwrap();
         match &arg.ty {
+            IdlType::Bytes => {
+                quote! {
+                    #[wincode(with = "wincode::containers::Vec<u8, U32SeqLen>")]
+                    pub #name: #stream
+                }
+            }
             IdlType::Vec(inner) => {
                 let wincode_path_str = format!(
                     "wincode::containers::Vec<{}, U32SeqLen>",
