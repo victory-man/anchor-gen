@@ -40,7 +40,9 @@ pub fn ty_to_rust_type(ty: &IdlType) -> String {
         IdlType::String => "String".to_string(),
         IdlType::Pubkey => "Pubkey".to_string(),
         IdlType::Option(inner) => format!("Option<{}>", ty_to_rust_type(inner)),
-        IdlType::Vec(inner) => format!("Vec<{}>", ty_to_rust_type(inner)),
+        IdlType::Vec(inner) => {
+            format!("wincode::containers::Vec<{}, U32SeqLen>", ty_to_rust_type(inner))
+        },
         IdlType::Array(ty, size) => match size {
             IdlArrayLen::Generic(name) => {
                 format!("[{}; {}]", ty_to_rust_type(ty), *name)
