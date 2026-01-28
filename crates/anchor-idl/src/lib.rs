@@ -22,6 +22,10 @@ pub const GEN_VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
 
 /// Converts an [IdlType] to a [String] of the Rust representation.
 pub fn ty_to_rust_type(ty: &IdlType) -> String {
+    ty_to_rust_type_is_wincode(ty, false)
+}
+
+pub fn ty_to_rust_type_is_wincode(ty: &IdlType, is_wincode: bool) -> String {
     match ty {
         IdlType::Bool => "bool".to_string(),
         IdlType::U8 => "u8".to_string(),
@@ -39,16 +43,30 @@ pub fn ty_to_rust_type(ty: &IdlType) -> String {
         IdlType::Bytes => "Vec<u8>".to_string(),
         IdlType::String => "String".to_string(),
         IdlType::Pubkey => "Pubkey".to_string(),
-        IdlType::Option(inner) => format!("Option<{}>", ty_to_rust_type(inner)),
+        IdlType::Option(inner) => {
+            format!("Option<{}>", ty_to_rust_type_is_wincode(inner, is_wincode))
+        }
         IdlType::Vec(inner) => {
-            format!("wincode::containers::Vec<{}, U32SeqLen>", ty_to_rust_type(inner))
-        },
+            if is_wincode {
+                format!("wincode::containers::Vec<{}, U32SeqLen>", ty_to_rust_type_is_wincode(inner, is_wincode))
+            } else {
+                format!("Vec<{}>", ty_to_rust_type_is_wincode(inner, is_wincode))
+            }
+        }
         IdlType::Array(ty, size) => match size {
             IdlArrayLen::Generic(name) => {
-                format!("[{}; {}]", ty_to_rust_type(ty), *name)
+                format!(
+                    "[{}; {}]",
+                    ty_to_rust_type_is_wincode(ty, is_wincode),
+                    *name
+                )
             }
             IdlArrayLen::Value(size) => {
-                format!("[{}; {}]", ty_to_rust_type(ty), *size)
+                format!(
+                    "[{}; {}]",
+                    ty_to_rust_type_is_wincode(ty, is_wincode),
+                    *size
+                )
             }
         },
         IdlType::Defined { name, generics: _ } => name.to_string(),
