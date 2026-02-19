@@ -7,10 +7,7 @@ use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 
-use crate::{
-    fields::{generate_struct_fields, get_idl_defined_fields_as_slice},
-    StructOpts,
-};
+use crate::{fields::{generate_struct_fields, get_idl_defined_fields_as_slice}, ty_to_rust_type_is_wincode, StructOpts};
 
 #[derive(Copy, Clone, Debug, Default)]
 pub struct FieldListProperties {
@@ -144,8 +141,31 @@ pub fn generate_enum_fields(fields: &[IdlField]) -> TokenStream {
         let name = format_ident!("{}", arg.name.to_snake_case());
         let type_name = crate::ty_to_rust_type(&arg.ty);
         let stream: proc_macro2::TokenStream = type_name.parse().unwrap();
-        quote! {
-            #name: #stream
+        match &arg.ty {
+            IdlType::Bytes => {
+                quote! {
+                    #[wincode(with = "wincode::containers::Vec<u8, U32SeqLen>")]
+                    #name: #stream
+                }
+            }
+            IdlType::Vec(inner) => {
+                let wincode_path_str = format!(
+                    "wincode::containers::Vec<{}, U32SeqLen>",
+                    ty_to_rust_type_is_wincode(inner, true)
+                );
+                let wincode_path_lit =
+                    syn::LitStr::new(&wincode_path_str, proc_macro2::Span::call_site());
+                let derive = quote! { #[wincode(with = #wincode_path_lit)] };
+                quote! {
+                    #derive
+                    #name: #stream
+                }
+            }
+            _ => {
+                quote! {
+                    #name: #stream
+                }
+            }
         }
     });
     quote! {
@@ -158,8 +178,31 @@ pub fn generate_enum_tuple_types(fields: &[IdlType]) -> TokenStream {
     let fields_rendered = fields.iter().map(|arg| {
         let type_name = crate::ty_to_rust_type(arg);
         let stream: proc_macro2::TokenStream = type_name.parse().unwrap();
-        quote! {
-            #stream
+        match &arg {
+            IdlType::Bytes => {
+                quote! {
+                    #[wincode(with = "wincode::containers::Vec<u8, U32SeqLen>")]
+                    #stream
+                }
+            }
+            IdlType::Vec(inner) => {
+                let wincode_path_str = format!(
+                    "wincode::containers::Vec<{}, U32SeqLen>",
+                    ty_to_rust_type_is_wincode(inner, true)
+                );
+                let wincode_path_lit =
+                    syn::LitStr::new(&wincode_path_str, proc_macro2::Span::call_site());
+                let derive = quote! { #[wincode(with = #wincode_path_lit)] };
+                quote! {
+                    #derive
+                    #stream
+                }
+            }
+            _ => {
+                quote! {
+                    #stream
+                }
+            }
         }
     });
     quote! {
